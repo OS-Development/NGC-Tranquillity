@@ -49,6 +49,7 @@ public class GetAssetsModule : INonSharedRegionModule
     private string m_GetMeshURL;
     private string m_GetMesh2URL;
     private string m_GetAssetURL;
+    private string m_ExternalViewerAssetURL;
 
     class APollRequest
     {
@@ -96,9 +97,11 @@ public class GetAssetsModule : INonSharedRegionModule
         if (m_GetMesh2URL != string.Empty)
             m_Enabled = true;
 
-        m_GetAssetURL = config.GetString("Cap_GetAsset", string.Empty);
+        m_GetAssetURL = config.GetString("Cap_ViewerAsset", string.Empty);
         if (m_GetAssetURL != string.Empty)
             m_Enabled = true;
+
+        m_ExternalViewerAssetURL = config.GetString("ExternalViewerAssetsURL", string.Empty);
     }
 
     public void AddRegion(Scene pScene)
@@ -130,7 +133,7 @@ public class GetAssetsModule : INonSharedRegionModule
             {
                 m_assetService = s.RequestModuleInterface<IAssetService>();
                 // We'll reuse the same handler for all requests.
-                m_getAssetHandler = new GetAssetsHandler(m_assetService);
+                m_getAssetHandler = new GetAssetsHandler(m_assetService, m_ExternalViewerAssetURL);
             }
 
             if (m_assetService == null)
